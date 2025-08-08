@@ -404,9 +404,6 @@ def validate_date(date_str: str) -> bool:
         return True
     except ValueError:
         return False
-
-
-def collect_personal_info(state: FormState) -> FormState:
     """Node to collect personal information from user"""
     print("\n=== PERSONAL INFORMATION SECTION ===")
     
@@ -753,6 +750,7 @@ if __name__ == "__main__":
     print("This agent will guide you through filling out a form section by section.")
     print("The agent uses LangGraph with human-in-the-loop functionality.")
     print("\nTo run this agent, use the LangGraph CLI or integrate it into your application.")
+
 
 
 
