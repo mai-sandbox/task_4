@@ -1,0 +1,28 @@
+# Core LangGraph dependencies
+langgraph>=0.2.24
+langchain-core>=0.3.0
+typing-extensions>=4.5.0
+
+# LangGraph checkpointing for state persistence
+langgraph-checkpoint>=0.2.0
+
+# LLM provider (using Anthropic as preferred)
+langchain-anthropic>=0.2.0
+
+# Alternative LLM providers (optional)
+langchain-openai>=0.2.0
+langchain-google-genai>=2.0.0
+
+# CLI interaction and utilities
+rich>=13.0.0
+click>=8.1.0
+
+# Data validation and serialization
+pydantic>=2.0.0
+
+# Standard library backports for older Python versions
+dataclasses-json>=0.6.0
+
+# Development and testing (optional)
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
