@@ -28,31 +28,105 @@ class FormState(TypedDict):
 def collect_personal_info(state: FormState) -> FormState:
     """Node to collect personal information from user"""
     print("\n=== PERSONAL INFORMATION SECTION ===")
-    print("Please provide the following information:")
     
-    # Check if we already have this data
-    if "personal_info" in state.get("form_data", {}):
+    # Check if we already have this data and user wants to edit
+    if "personal_info" in state.get("form_data", {}) and state.get("user_input") != "edit":
         print("Current personal information:")
         for key, value in state["form_data"]["personal_info"].items():
             print(f"  {key.replace('_', ' ').title()}: {value}")
-        print("\nPress Enter to continue or type 'edit' to modify:")
+        print("\nPress Enter to continue or type 'edit' to modify this section")
         
-        # This will pause execution and wait for user input
+        # Use interrupt to pause and wait for user input
+        user_choice = interrupt("Continue or edit personal info? (press Enter to continue, 'edit' to modify): ")
+        
+        if user_choice and user_choice.strip().lower() == "edit":
+            # Clear existing data to re-collect
+            form_data = state.get("form_data", {})
+            if "personal_info" in form_data:
+                del form_data["personal_info"]
+            return {
+                **state,
+                "form_data": form_data,
+                "current_section": "personal_info",
+                "user_input": "edit"
+            }
+        else:
+            # Mark section as completed and move on
+            sections_completed = state.get("sections_completed", [])
+            if "personal_info" not in sections_completed:
+                sections_completed.append("personal_info")
+            return {
+                **state,
+                "sections_completed": sections_completed,
+                "current_section": "personal_info",
+                "user_input": None
+            }
+    
+    # Collect personal information
+    print("Please provide the following information:")
+    personal_info = {}
+    validation_errors = []
+    
+    # Collect Full Name
+    print("\n1. Full Name:")
+    full_name = interrupt("Enter your full name: ")
+    if not full_name or len(full_name.strip()) < 2:
+        validation_errors.append("Full name must be at least 2 characters long")
+    else:
+        personal_info["full_name"] = full_name.strip()
+    
+    # Collect Date of Birth
+    print("\n2. Date of Birth (YYYY-MM-DD):")
+    dob = interrupt("Enter your date of birth (YYYY-MM-DD): ")
+    if not validate_date(dob):
+        validation_errors.append("Date of birth must be in YYYY-MM-DD format and be a valid date")
+    else:
+        personal_info["date_of_birth"] = dob.strip()
+    
+    # Collect Email
+    print("\n3. Email Address:")
+    email = interrupt("Enter your email address: ")
+    if not validate_email(email):
+        validation_errors.append("Please enter a valid email address")
+    else:
+        personal_info["email"] = email.strip().lower()
+    
+    # Collect Phone Number
+    print("\n4. Phone Number:")
+    phone = interrupt("Enter your phone number: ")
+    if not validate_phone(phone):
+        validation_errors.append("Please enter a valid phone number")
+    else:
+        personal_info["phone"] = phone.strip()
+    
+    # Handle validation errors
+    if validation_errors:
+        print("\n❌ Validation Errors:")
+        for error in validation_errors:
+            print(f"  - {error}")
+        print("\nPlease correct the errors and try again.")
         return {
             **state,
             "current_section": "personal_info",
+            "validation_errors": validation_errors,
             "user_input": None
         }
     
-    print("1. Full Name:")
-    print("2. Date of Birth (YYYY-MM-DD):")
-    print("3. Email Address:")
-    print("4. Phone Number:")
-    print("\nPlease provide your input (the agent will pause here for CLI interaction)")
+    # Update state with collected data
+    form_data = state.get("form_data", {})
+    form_data["personal_info"] = personal_info
+    sections_completed = state.get("sections_completed", [])
+    if "personal_info" not in sections_completed:
+        sections_completed.append("personal_info")
+    
+    print("\n✅ Personal information collected successfully!")
     
     return {
         **state,
+        "form_data": form_data,
+        "sections_completed": sections_completed,
         "current_section": "personal_info",
+        "validation_errors": [],
         "user_input": None
     }
 
@@ -298,4 +372,5 @@ if __name__ == "__main__":
     print("This agent will guide you through filling out a form section by section.")
     print("The agent uses LangGraph with human-in-the-loop functionality.")
     print("\nTo run this agent, use the LangGraph CLI or integrate it into your application.")
+
 
