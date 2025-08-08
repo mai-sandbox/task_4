@@ -1,0 +1,12 @@
+{
+    "dependencies": [
+        "langgraph",
+        "langchain",
+        "langchain-core",
+        "typing-extensions"
+    ],
+    "graphs": {
+        "form_agent": "./agent.py:app"
+    },
+    "env": "./.env"
+}
