@@ -59,10 +59,9 @@ FORM_SECTIONS = {
 SECTION_ORDER = ["personal_info", "contact_info", "preferences", "review"]
 
 
-@tool
 def collect_section_data(section_name: str, section_config: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Tool to collect data for a specific form section using interrupt.
+    Function to collect data for a specific form section using interrupt.
     
     Args:
         section_name: Name of the form section
@@ -283,3 +282,4 @@ if __name__ == "__main__":
     print("Form-filling agent compiled successfully!")
     print(f"Graph nodes: {list(app.get_graph().nodes.keys())}")
     print("Ready for CLI interaction...")
+
